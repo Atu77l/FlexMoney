@@ -4,9 +4,6 @@ const mysql2=require('mysql2');
 var mysql = require('mysql');
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -25,7 +22,7 @@ var con = mysql.createConnection({
     // });
   });
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -37,10 +34,22 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
-app.post("/register",(req,res)=>{
-  console.log(req);
-  res.json("Data Submitted");
-});
+// Route for creating the post
+app.post('/register', (req,res)=> {
+
+const name = req.body.name;
+const address = req.body.address;
+const number = req.body.number;
+const gender = req.body.gender;
+const dom = req.body.dom;
+const time = req.body.time;
+const payment = req.body.payment;
+con.query("INSERT INTO customers(name,address,number,gender,date,time,payment) VALUES (?,?,?,?,?,?,?)",[name,address,number,gender,dom,time,payment], (err,result)=>{
+   if(err) {
+   console.log(err)
+   } 
+   console.log(result)
+});   })
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
